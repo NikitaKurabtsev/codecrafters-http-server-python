@@ -22,7 +22,7 @@ def main():
         elif path.startswith(b"/echo/"):
             content = path.lstrip(b"/echo/")
             print(content)
-            content_length = len(content)
+            content_length = str(len(content))
             response = (
                     HTTP_200_ONE_LINE
                     + CONTENT_TYPE
