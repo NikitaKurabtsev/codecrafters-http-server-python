@@ -5,26 +5,30 @@ def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
     conn, host = server_socket.accept()
 
+    HTTP_200 = bytes("HTTP/1.1 200 OK\r\n\r\n", "utf-8")
+    HTTP_200_ONE_LINE = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
+    HTTP_400 = bytes("HTTP/1.1 400 Bad Request\r\n\r\n", "utf-8")
+    HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
+    CONTENT_TYPE = bytes("Content-Type: text/plain\r\n", "utf-8")
+
     data = conn.recv(1024)
 
-    http_method, path, http_version, *rest = data.split(b" ")
-    print(path)
+    try:
+        http_method, path, http_version, *rest = data.split(b" ")
+        print(path)
 
-    if path == b"/":
-        response = "HTTP/1.1 200 OK\r\n\r\n"
-    elif path.startswith(b"/echo/"):
-        body = path.lstrip("/echo/")
-        response = (
-            f"HTTP/1.1 200 OK\r\n"
-            f"Content-Type: text/plain\r\n"
-            f"Content-Length: {len(body)}\r\n\r\n"
-            f"{body}"
-        )
-    else:
-        print(f"Something goes wrong")
-        response = "HTTP/1.1 400 Bad Request\r\n\r\n"
+        if path == b"/":
+            response = HTTP_200
+        elif path.startswith("/echo/"):
+            content = path.lstrip(b"/")[-1]
+            content_lenth = len(str(content))
+            CONTENT_LENGTH = f"Content-Length: {content_lenth}"
+            response = f"{HTTP_200_ONE_LINE}{CONTENT_TYPE}{}"
 
-    conn.sendall(response.encode())
+    except Exception as e:
+        print(f"Something goes wrong: {e}")
+        conn.sendall(HTTP_400)
+
     print(f"Connection from: {host}, received: {data}")
 
 if __name__ == "__main__":
