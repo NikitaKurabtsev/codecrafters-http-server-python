@@ -8,12 +8,12 @@ CONTENT_LENGTH = bytes("Content-Length: ", "utf-8")
 
 
 def generate_response(content: bytes) -> bytes:
-    content_length = len(content).to_bytes()
+    content_length = str(len(content))
     return (
         HTTP_200
         + CONTENT_TYPE
         + CONTENT_LENGTH
-        + content_length
+        + bytes(content_length, "utf-8")
         + b"\r\n\r\n"
         + content
     )
