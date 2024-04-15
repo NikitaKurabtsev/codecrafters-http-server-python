@@ -23,10 +23,10 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
     match path:
         case b"/":
             response = HTTP_200 + b"\r\n"
-        case path.startswith(b"/echo/"):
+        case _ if path.startswith(b"/echo/"):
             content = path.lstrip(b"/echo/")
             response = generate_response(content)
-        case path.startswith(b"/user-agent"):
+        case _ if path.startswith(b"/user-agent"):
             content = headers[2].split(b" ")[-1]
             response = generate_response(content)
         case _:
