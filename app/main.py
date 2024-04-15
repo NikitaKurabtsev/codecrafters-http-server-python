@@ -5,7 +5,7 @@ def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
     conn, host = server_socket.accept()
 
-    HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
+    HTTP_200 = bytes("HTTP/1.1 200 OK\r\n\r\n", "utf-8")
     HTTP_400 = bytes("HTTP/1.1 400 Bad Request\r\n\r\n", "utf-8")
     HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
     CONTENT_TYPE = bytes("Content-Type: text/plain\r\n", "utf-8")
