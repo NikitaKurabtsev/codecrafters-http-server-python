@@ -36,7 +36,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
     return response
 
 
-def handle_connection(client_connection):
+def handle_connection(client_connection: socket.socket) -> None:
     data = client_connection.recv(1024)
 
     http_headers = data.split(b"\r\n")
