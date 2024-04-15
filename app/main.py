@@ -27,7 +27,7 @@ def main():
                     HTTP_200_ONE_LINE
                     + CONTENT_TYPE
                     + b"Content-Length: "
-                    + bytes(content_length)
+                    + bytes(content_length, "utf-8")
                     + b"\r\n\r\n"
                     + content
             )
