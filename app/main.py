@@ -16,7 +16,9 @@ def main():
         http_method, path, http_version, *rest = data.split(b" ")
         print(path)
 
-        if path == b"/echo/":
+        if path == b"/":
+            conn.sendall(HTTP_200)
+        elif path == b"/echo/":
             body = path.lstrip("/echo/")
             CONTENT_LENGTH = bytes(f"Content-Length: {len(body)}\r\n\r\n")
             response = f"{HTTP_200}{CONTENT_TYPE}{CONTENT_LENGTH}{body}"
