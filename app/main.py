@@ -19,16 +19,25 @@ def main():
 
         if path == b"/":
             response = HTTP_200
-        elif path.startswith("/echo/"):
-            content = path.lstrip(b"/")[-1]
-            content_lenth = len(str(content))
-            CONTENT_LENGTH = f"Content-Length: {content_lenth}"
-            response = f"{HTTP_200_ONE_LINE}{CONTENT_TYPE}{}"
+        elif path.startswith(b"/echo/"):
+            content = path.lstrip(b"/echo/")
+            content_length = len(content)
+            response = (
+                    HTTP_200_ONE_LINE
+                    + CONTENT_TYPE
+                    + b"Content-Length: "
+                    + bytes(content_length)
+                    + b"\r\n\r\n"
+                    + content
+            )
+        else:
+            response = HTTP_404
 
     except Exception as e:
         print(f"Something goes wrong: {e}")
-        conn.sendall(HTTP_400)
+        response = HTTP_400
 
+    conn.sendall(response)
     print(f"Connection from: {host}, received: {data}")
 
 if __name__ == "__main__":
