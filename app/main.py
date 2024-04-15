@@ -37,15 +37,16 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
 
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
-    conn, host = server_socket.accept()
+    client_socket = server_socket.accept()[0]
 
-    data = conn.recv(1024)
+    data = client_socket.recv(1024)
 
     http_headers = data.split(b"\r\n")
     path = data.split(b" ")[1]
+
     response = process_request(path, http_headers)
 
-    conn.sendall(response)
+    client_socket.sendall(response)
 
 
 if __name__ == "__main__":
