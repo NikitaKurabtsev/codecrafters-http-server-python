@@ -21,7 +21,7 @@ def main():
             f"{body}"
         )
     else:
-        print(f"Something goes wrong: {e}")
+        print(f"Something goes wrong")
         response = "HTTP/1.1 400 Bad Request\r\n\r\n"
 
     conn.sendall(response.encode())
