@@ -1,5 +1,6 @@
 import socket
 from typing import List
+from threading import Thread
 
 HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
 HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
@@ -35,18 +36,23 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
     return response
 
 
-def main():
-    server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
-    client_socket = server_socket.accept()[0]
-
-    data = client_socket.recv(1024)
+def handle_connection(client_connection):
+    data = client_connection.recv(1024)
 
     http_headers = data.split(b"\r\n")
     path = data.split(b" ")[1]
 
     response = process_request(path, http_headers)
 
-    client_socket.sendall(response)
+    client_connection.sendall(response)
+
+
+def main():
+    server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
+    client_socket = server_socket.accept()[0]
+
+    thread = Thread(target=handle_connection, args=[client_socket])
+    thread.start()
 
 
 if __name__ == "__main__":
