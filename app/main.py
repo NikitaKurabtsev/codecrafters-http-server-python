@@ -20,6 +20,7 @@ def main():
             conn.sendall(HTTP_200)
         elif path == b"/echo/":
             body = path.lstrip("/echo/")
+            print(body.encode())
             CONTENT_LENGTH = bytes(f"Content-Length: {len(body)}\r\n\r\n")
             response = f"{HTTP_200}{CONTENT_TYPE}{CONTENT_LENGTH}{body}"
             conn.sendall(response)
