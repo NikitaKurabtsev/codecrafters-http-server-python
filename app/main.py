@@ -19,9 +19,9 @@ def main():
         message = f"{message[1]}\r\n\r\n"
         print(message)
         CONTENT_LENGTH = bytes(f"Content-Length: {len(message)}\r\n\r\n", "utf-8")
-
+        HTTP_MESSAGE =  f"{HTTP_200} {CONTENT_TYPE}, {CONTENT_LENGTH} {message}
         if path == b"/":
-            conn.sendall(HTTP_200, CONTENT_TYPE, CONTENT_LENGTH, message)
+            conn.sendall(HTTP_MESSAGE)
         else:
             conn.sendall(HTTP_404)
 
