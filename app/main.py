@@ -49,10 +49,12 @@ def handle_connection(client_connection):
 
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
-    client_socket = server_socket.accept()[0]
 
-    thread = Thread(target=handle_connection, args=[client_socket])
-    thread.start()
+    while True:
+        client_socket = server_socket.accept()[0]
+
+        thread = Thread(target=handle_connection, args=[client_socket])
+        thread.start()
 
 
 if __name__ == "__main__":
