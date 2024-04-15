@@ -13,7 +13,7 @@ def main():
 
         if path == b"/":
             response = "HTTP/1.1 200 OK\r\n\r\n"
-        elif path.startswith("/echo/"):
+        elif path.startswith(b"/echo/"):
             body = path.lstrip("/echo/")
             response = (
                 f"HTTP/1.1 200 OK\r\n"
