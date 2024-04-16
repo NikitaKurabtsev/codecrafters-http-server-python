@@ -40,6 +40,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                 case _ if os.path.exists(filepath):
                     with open(filepath, 'rb') as file:
                         content = file.read()
+                        print(content)
                         response = generate_response(content, include_length=False)
                 case _:
                     response = HTTP_404
