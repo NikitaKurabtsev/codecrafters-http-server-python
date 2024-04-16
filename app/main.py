@@ -13,7 +13,7 @@ def generate_response(content: bytes, file=False) -> bytes:
 
     return (
         HTTP_200
-        + (b"Content-Type: application/octet-stream\r\n" if file is True else b"Content-Type: text/plain\r\n")
+        + (b"Content-Type: application/octet-stream\r\n" if file else b"Content-Type: text/plain\r\n")
         + (b"Content-Length: " + content_length)
         + b"\r\n\r\n"
         + content
@@ -40,7 +40,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                         content = file.read()
                         response = generate_response(content, file=True)
                 case _ if not os.path.exists(filepath):
-                    response = HTTP_404 + b"Content-length: 0\r\n\r\n"
+                    response = HTTP_404
                 case _:
                     response = HTTP_404
         case _:
