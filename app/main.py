@@ -24,8 +24,6 @@ def generate_response(content: bytes, content_type: bytes) -> bytes:
 
 
 def process_request(path: bytes, headers: List[bytes]) -> bytes:
-    response = None
-
     match path:
         case b"/":
             response = HTTP_200 + b"\r\n"
@@ -39,13 +37,13 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
             filename = path.lstrip(b"/files/")
             directory = sys.argv[2]
             filepath = os.path.join(directory, filename.decode())
-            match filepath:
-                case _ if os.path.exists(filepath):
-                    with open(filepath, 'rb') as file:
-                        content = file.read()
-                        response = generate_response(content, CONTENT_TYPE_APP)
-                case _ if not os.path.exists(filepath):
-                    response = HTTP_404
+
+            if os.path.exists(filepath):
+                with open(filepath, 'rb') as file:
+                    content = file.read()
+                    response = generate_response(content, CONTENT_TYPE_APP)
+            else:
+                response = HTTP_404
         case _:
             response = HTTP_404
 
