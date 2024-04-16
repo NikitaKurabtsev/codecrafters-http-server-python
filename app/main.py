@@ -17,8 +17,8 @@ def generate_response(content: bytes, content_type: bytes, length=True) -> bytes
     return (
         HTTP_200
         + content_type
-        + (CONTENT_LENGTH if length else None)
-        + (bytes(content_length, "utf-8") if length else None)
+        + (CONTENT_LENGTH if length else b"")
+        + (bytes(content_length, "utf-8") if length else b"")
         + b"\r\n\r\n"
         + content
     )
