@@ -35,7 +35,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
             response = generate_response(content, CONTENT_TYPE_TEXT)
         case _ if path.startswith(b"/files/") and sys.argv[1] == "--directory":
             filename = path.lstrip(b"/files/")
-            directory = sys.argv[1]
+            directory = sys.argv[2]
             filepath = os.path.join(directory, filename.decode())
             match filepath:
                 case _ if os.path.exists(filepath):
