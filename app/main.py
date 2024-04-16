@@ -5,7 +5,7 @@ from typing import List
 from threading import Thread
 
 HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
-HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n", "utf-8")
+HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
 
 
 def generate_response(content: bytes, file=False) -> bytes:
@@ -40,7 +40,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                         content = file.read()
                         response = generate_response(content, file=True)
                 case _ if not os.path.exists(filepath):
-                    response = HTTP_404 + b"Content-Length: 0\r\n\r\n"
+                    response = HTTP_404[:4] + b"Content-Length: 0\r\n\r\n"
                 case _:
                     response = HTTP_404
         case _:
