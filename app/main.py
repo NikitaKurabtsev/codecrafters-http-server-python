@@ -11,13 +11,14 @@ CONTENT_TYPE_APP = bytes("Content-Type: application/octet-stream\r\n", "utf-8")
 CONTENT_LENGTH = bytes("Content-Length: ", "utf-8")
 
 
-def generate_response(content: bytes, content_type: bytes) -> bytes:
+def generate_response(content: bytes, content_type: bytes, length=True) -> bytes:
     content_length = str(len(content))
+
     return (
         HTTP_200
         + content_type
-        + CONTENT_LENGTH
-        + bytes(content_length, "utf-8")
+        + (CONTENT_LENGTH if length else None)
+        + (bytes(content_length, "utf-8") if length else None)
         + b"\r\n\r\n"
         + content
     )
@@ -37,13 +38,13 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
             filename = path.lstrip(b"/files/")
             directory = sys.argv[2]
             filepath = os.path.join(directory, filename.decode())
-
-            if os.path.exists(filepath):
-                with open(filepath, 'rb') as file:
-                    content = file.read()
-                    response = generate_response(content, CONTENT_TYPE_APP)
-            else:
-                response = HTTP_404
+            match filepath:
+                case _ if os.path.exists(filepath):
+                    with open(filepath, 'rb') as file:
+                        content = file.read()
+                        response = generate_response(content, CONTENT_TYPE_APP)
+                case _:
+                    response = HTTP_404
         case _:
             response = HTTP_404
 
