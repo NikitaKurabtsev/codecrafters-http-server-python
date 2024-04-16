@@ -24,6 +24,8 @@ def generate_response(content: bytes, content_type: bytes) -> bytes:
 
 
 def process_request(path: bytes, headers: List[bytes]) -> bytes:
+    response = None
+
     match path:
         case b"/":
             response = HTTP_200 + b"\r\n"
@@ -42,7 +44,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                     with open(filepath, 'rb') as file:
                         content = file.read()
                         response = generate_response(content, CONTENT_TYPE_APP)
-                case _:
+                case _ if not os.path.exists(filepath):
                     response = HTTP_404
         case _:
             response = HTTP_404
