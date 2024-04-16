@@ -40,7 +40,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                         content = file.read()
                         response = generate_response(content, file=True)
                 case _:
-                    response = HTTP_404[:-2]  # + b"Content-Length: 0\r\n\r\n"
+                    response = HTTP_404  # + b"Content-Length: 0\r\n\r\n"
                     print(response)
         case _:
             response = HTTP_404
