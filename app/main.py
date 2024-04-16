@@ -4,7 +4,7 @@ import os
 from typing import List
 from threading import Thread
 
-HTTP_200 = bytes("HTTP/1.1 200 OK\r\n\r\n", "utf-8")
+HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
 HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
 
 
@@ -23,7 +23,7 @@ def generate_response(content: bytes, file=False) -> bytes:
 def process_request(path: bytes, headers: List[bytes]) -> bytes:
     match path:
         case b"/":
-            response = HTTP_200
+            response = HTTP_200 + b"\r\n"
         case _ if path.startswith(b"/echo/"):
             content = path.lstrip(b"/echo/")
             response = generate_response(content)
