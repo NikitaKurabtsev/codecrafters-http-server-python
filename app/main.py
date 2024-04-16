@@ -6,17 +6,15 @@ from threading import Thread
 
 HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
 HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
-CONTENT_TYPE_TEXT = bytes("Content-Type: text/plain\r\n", "utf-8")
-CONTENT_TYPE_APP = bytes("Content-Type: application/octet-stream\r\n", "utf-8")
 
 
-def generate_response(content: bytes, include_length=True) -> bytes:
+def generate_response(content: bytes, file=False) -> bytes:
     content_length = str(len(content)).encode("utf-8")
 
     return (
         HTTP_200
-        + (b"Content-Type: text/plain\r\n" if include_length else b"Content-Type: application/octet-stream")
-        + ((b"Content-Length: " + content_length) if include_length else b"")
+        + (b"Content-Type: application/octet-stream\r\n" if file else b"Content-Type: text/plain\r\n")
+        + (b"Content-Length: " + content_length)
         + b"\r\n\r\n"
         + content
     )
@@ -40,7 +38,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                 case _ if os.path.exists(filepath):
                     with open(filepath, 'rb') as file:
                         content = file.read()
-                        response = generate_response(content, include_length=False)
+                        response = generate_response(content, file=True)
                 case _:
                     response = HTTP_404
         case _:
