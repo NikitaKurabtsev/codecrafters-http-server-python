@@ -39,8 +39,6 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                     with open(filepath, 'rb') as file:
                         content = file.read()
                         response = generate_response(content, file=True)
-                case _ if not os.path.exists(filepath):
-                    response = HTTP_404
                 case _:
                     response = HTTP_404
         case _:
