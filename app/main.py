@@ -8,16 +8,15 @@ HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
 HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
 CONTENT_TYPE_TEXT = bytes("Content-Type: text/plain\r\n", "utf-8")
 CONTENT_TYPE_APP = bytes("Content-Type: application/octet-stream\r\n", "utf-8")
-CONTENT_LENGTH = bytes("Content-Length: ", "utf-8")
 
 
-def generate_response(content: bytes, content_type: bytes, include_length=True) -> bytes:
-    content_length = str(len(content))
+def generate_response(content: bytes, include_length=True) -> bytes:
+    content_length = str(len(content)).encode("utf-8")
 
     return (
         HTTP_200
-        + content_type
-        + (CONTENT_LENGTH + bytes(content_length, "utf-8")) if include_length else b""
+        + CONTENT_TYPE_TEXT if include_length else CONTENT_TYPE_APP
+        + (b"Content-Length: " + content_length) if include_length else b""
         + b"\r\n\r\n"
         + content
     )
@@ -29,10 +28,10 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
             response = HTTP_200 + b"\r\n"
         case _ if path.startswith(b"/echo/"):
             content = path.lstrip(b"/echo/")
-            response = generate_response(content, CONTENT_TYPE_TEXT)
+            response = generate_response(content)
         case _ if path.startswith(b"/user-agent"):
             content = headers[2].split(b" ")[-1]
-            response = generate_response(content, CONTENT_TYPE_TEXT)
+            response = generate_response(content)
         case _ if path.startswith(b"/files/") and sys.argv[1] == "--directory":
             filename = path.lstrip(b"/files/")
             directory = sys.argv[2]
@@ -41,7 +40,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                 case _ if os.path.exists(filepath):
                     with open(filepath, 'rb') as file:
                         content = file.read()
-                        response = generate_response(content, CONTENT_TYPE_APP, include_length=False)
+                        response = generate_response(content, include_length=False)
                 case _:
                     response = HTTP_404
         case _:
