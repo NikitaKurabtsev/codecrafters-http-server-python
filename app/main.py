@@ -15,8 +15,8 @@ def generate_response(content: bytes, include_length=True) -> bytes:
 
     return (
         HTTP_200
-        + b"Content-Type: text/plain\r\n" if include_length else b"Content-Type: application/octet-stream\r\n"
-        + (b"Content-Length: " + content_length) if include_length else b"\r\n"
+        + (b"Content-Type: text/plain\r\n" if include_length else b"Content-Type: application/octet-stream\r\n")
+        + ((b"Content-Length: " + content_length) if include_length else b"")
         + b"\r\n\r\n"
         + content
     )
