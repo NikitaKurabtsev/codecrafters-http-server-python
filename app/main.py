@@ -13,7 +13,7 @@ def generate_response(content: bytes, file=False) -> bytes:
 
     return (
         HTTP_200
-        + (b"Content-Type: application/octet-stream\r\n" if (file is True) else b"Content-Type: text/plain\r\n")
+        + (b"Content-Type: application/octet-stream\r\n" if file is True else b"Content-Type: text/plain\r\n")
         + (b"Content-Length: " + content_length)
         + b"\r\n\r\n"
         + content
