@@ -44,6 +44,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                     print(response)
         case _:
             response = HTTP_404
+            print(response)
 
     return response
 
