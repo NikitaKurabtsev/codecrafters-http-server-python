@@ -5,7 +5,7 @@ from typing import List
 from threading import Thread
 
 HTTP_200 = bytes("HTTP/1.1 200 OK\r\n", "utf-8")
-HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n\r\n", "utf-8")
+HTTP_404 = bytes("HTTP/1.1 404 Not Found\r\n", "utf-8")
 
 
 def generate_response(content: bytes, file=False) -> bytes:
