@@ -24,8 +24,6 @@ def generate_response(content: bytes, content_type: bytes) -> bytes:
 
 
 def process_request(path: bytes, headers: List[bytes]) -> bytes:
-    response = None
-
     match path:
         case b"/":
             response = HTTP_200 + b"\r\n"
@@ -46,7 +44,7 @@ def process_request(path: bytes, headers: List[bytes]) -> bytes:
                         response = generate_response(content, CONTENT_TYPE_APP)
                 case _:
                     response = HTTP_404
-        case _ if os.path:
+        case _:
             response = HTTP_404
 
     return response
