@@ -45,7 +45,7 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
                         content = file.read()
                         response = generate_response(content, file=True)
                 case _ if http_method == b"POST":
-                    with open(filepath, "wb", encoding="utf-8") as file:
+                    with open(filepath, "wb") as file:
                         content = request_data[-1]
                         file.write(content)
                         response = HTTP_201
