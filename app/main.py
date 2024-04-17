@@ -40,19 +40,15 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
             directory = sys.argv[2]
             filepath = os.path.join(directory, filename.decode())
             match filepath:
-                case _ if os.path.exists(filepath):
-                    match http_method:
-                        case b"GET":
-                            with open(filepath, "rb") as file:
-                                content = file.read()
-                                response = generate_response(content, file=True)
-                        case b"POST":
-                            with open(filepath, "wb", encoding="utf-8") as file:
-                                content = request_data[-1]
-                                file.write(content)
-                                response = HTTP_201
-                        case _:
-                            response = HTTP_404
+                case _ if os.path.exists(filepath) and http_method == b"GET":
+                    with open(filepath, "rb") as file:
+                        content = file.read()
+                        response = generate_response(content, file=True)
+                case _ if http_method == b"POST":
+                    with open(filepath, "wb", encoding="utf-8") as file:
+                        content = request_data[-1]
+                        file.write(content)
+                        response = HTTP_201
                 case _:
                     response = HTTP_404[:-2] + b"Content-Length: 0\r\n\r\n"
 
