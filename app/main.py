@@ -45,6 +45,7 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
                         print("Inside get METHOD")
                         with open(filepath, "rb") as file:
                             content = file.read()
+                            print(content)
                             response = generate_response(content, file=True)
                     if http_method == b"POST":
                         with open(filepath, "wb", encoding="utf-8") as file:
