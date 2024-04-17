@@ -42,6 +42,7 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
             match filepath:
                 case _ if os.path.exists(filepath):
                     if http_method == b"GET":
+                        print("Inside get METHOD")
                         with open(filepath, "rb") as file:
                             content = file.read()
                             response = generate_response(content, file=True)
