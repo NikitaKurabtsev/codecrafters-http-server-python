@@ -41,19 +41,18 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
             filepath = os.path.join(directory, filename.decode())
             match filepath:
                 case _ if os.path.exists(filepath):
-                    if http_method == b"GET":
-                        print("Inside get METHOD")
-                        with open(filepath, "rb") as file:
-                            content = file.read()
-                            print(content)
-                            response = generate_response(content, file=True)
-                    if http_method == b"POST":
-                        with open(filepath, "wb", encoding="utf-8") as file:
-                            content = request_data[-1]
-                            file.write(content)
-                            response = HTTP_201
-                    else:
-                        response = HTTP_404
+                    match http_method:
+                        case b"GET":
+                            with open(filepath, "rb") as file:
+                                content = file.read()
+                                response = generate_response(content, file=True)
+                        case b"POST":
+                            with open(filepath, "wb", encoding="utf-8") as file:
+                                content = request_data[-1]
+                                file.write(content)
+                                response = HTTP_201
+                        case _:
+                            response = HTTP_404
                 case _:
                     response = HTTP_404[:-2] + b"Content-Length: 0\r\n\r\n"
 
@@ -65,10 +64,8 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
 
 def handle_connection(client_connection: socket.socket) -> None:
     data = client_connection.recv(1024)
-    print(data)
 
     http_method = data.split(b" ")[0]
-    print(http_method)
     request_data = data.split(b"\r\n")
     path = data.split(b" ")[1]
 
