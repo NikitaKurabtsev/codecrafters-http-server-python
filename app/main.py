@@ -66,6 +66,7 @@ def handle_connection(client_connection: socket.socket) -> None:
     print(data)
 
     http_method = data.split(b" ")[0]
+    print(http_method)
     request_data = data.split(b"\r\n")
     path = data.split(b" ")[1]
 
