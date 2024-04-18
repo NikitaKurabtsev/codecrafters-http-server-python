@@ -17,7 +17,7 @@ from app.constants import (
 )
 
 
-def generate_response(content: bytes, file: bool = False) -> bytes:
+def response_handler(content: bytes, file: bool = False) -> bytes:
     content_length = str(len(content)).encode("utf-8")
     content_type = b"application/octet-stream" if file else b"text/plain"
 
@@ -30,17 +30,17 @@ def generate_response(content: bytes, file: bool = False) -> bytes:
     )
 
 
-def process_request(request_data: List[bytes], http_method: bytes, path: bytes) -> bytes:
+def request_handler(request_data: List[bytes], http_method: bytes, path: bytes) -> bytes:
     if path == b"/":
         response = HTTP_200 + b"\r\n"
 
     elif path.startswith(b"/echo/"):
         content = path.lstrip(b"/echo/")
-        response = generate_response(content)
+        response = response_handler(content)
 
     elif path.startswith(b"/user-agent"):
         content = request_data[2].split(b" ")[-1]
-        response = generate_response(content)
+        response = response_handler(content)
 
     elif path.startswith(b"/files/") and sys.argv[1] == "--directory":
         filename = path.lstrip(b"/files/")
@@ -51,7 +51,7 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
             if os.path.exists(filepath):
                 with open(filepath, "rb") as file:
                     content = file.read()
-                    response = generate_response(content, file=True)
+                    response = response_handler(content, file=True)
             else:
                 response = HTTP_404[:-2] + b"Content-Length: 0\r\n\r\n"
 
@@ -68,14 +68,14 @@ def process_request(request_data: List[bytes], http_method: bytes, path: bytes) 
     return response
 
 
-def handle_connection(client_connection: socket.socket) -> None:
+def connection_handler(client_connection: socket.socket) -> None:
     data = client_connection.recv(MAX_BUFFER_SIZE)
 
     http_method = data.split(b" ")[0]
     request_data = data.split(b"\r\n")
     path = data.split(b" ")[1]
 
-    response = process_request(request_data, http_method, path)
+    response = request_handler(request_data, http_method, path)
 
     client_connection.sendall(response)
 
@@ -85,7 +85,7 @@ def main():
 
     while True:
         client_socket = server_socket.accept()[0]
-        thread = Thread(target=handle_connection, args=[client_socket])
+        thread = Thread(target=connection_handler, args=[client_socket])
         thread.start()
 
 
